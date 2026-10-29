@@ -1,0 +1,10 @@
+# Python dependencies for main.py  ->  pip install -r requirements.txt
+#
+# WeasyPrint additionally needs the native Pango/GObject libraries:
+#   Windows : install "GTK3 Runtime" — https://github.com/tschoonj/
+#             GTK-for-Windows-Runtime-Environment-Installer
+#             (main.py finds it itself, or set the GTK_BASEDIR variable)
+#   macOS   : brew install pango
+#   Linux   : sudo apt install libpango-1.0-0 libpangocairo-1.0-0 fonts-dejavu-core
+WeasyPrint>=61.0
+pandas>=2.0

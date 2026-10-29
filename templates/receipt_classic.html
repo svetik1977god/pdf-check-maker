@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Чек (классический) {{ invoice_id }}</title>
+  <style>
+    @page { size: A4; margin: 16mm 14mm; }
+
+    body {
+      font-family: "DejaVu Sans", "Roboto", Arial, sans-serif;
+      font-size: 11px;
+      color: #1a1a1a;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 18px;
+      text-align: center;
+      margin: 0 0 2px 0;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 11px;
+      color: #555;
+      margin-bottom: 14px;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    .parties td {
+      vertical-align: top;
+      padding: 6px 8px;
+      border: 1px solid #bbb;
+      width: 50%;
+    }
+
+    .label {
+      display: block;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666;
+      margin-bottom: 2px;
+    }
+
+    .value { font-size: 12px; }
+
+    .meta { margin: 10px 0 14px 0; }
+
+    .meta td {
+      padding: 3px 8px;
+      border-bottom: 1px dotted #ccc;
+      font-size: 11px;
+    }
+
+    .meta td:first-child { color: #555; width: 34%; }
+
+    .items { margin-bottom: 12px; }
+
+    .items th {
+      background: #f0f0f0;
+      border: 1px solid #bbb;
+      padding: 6px 8px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      text-align: left;
+    }
+
+    .items td {
+      border: 1px solid #ccc;
+      padding: 6px 8px;
+      vertical-align: top;
+    }
+
+    .items td.c { text-align: center; width: 30px; color: #666; }
+    .items td.r { text-align: right; width: 90px; white-space: nowrap; }
+
+    tfoot td {
+      border: none;
+      padding: 8px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    tfoot .total-label { text-align: right; text-transform: uppercase; }
+    tfoot .total-value { text-align: right; width: 130px; }
+
+    .note {
+      border-left: 3px solid #999;
+      padding: 6px 10px;
+      background: #fafafa;
+      font-size: 11px;
+      margin-bottom: 18px;
+    }
+
+    .note:empty, .meta tr:empty { display: none; }
+
+    .sign {
+      margin-top: 26px;
+      display: table;
+      width: 100%;
+    }
+
+    .sign span { display: table-cell; width: 50%; font-size: 11px; color: #333; }
+
+    .line {
+      border-bottom: 1px solid #333;
+      width: 65%;
+      margin-top: 22px;
+    }
+
+    footer {
+      margin-top: 22px;
+      padding-top: 6px;
+      border-top: 1px solid #ddd;
+      font-size: 9px;
+      color: #777;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>ПРИХОДНЫЙ ЧЕК &#8470; {{ invoice_id }}</h1>
+  <div class="subtitle">от {{ date_fmt }} &nbsp;&middot;&nbsp; {{ seller }}</div>
+
+  <table class="parties">
+    <tr>
+      <td>
+        <span class="label">Продавец</span>
+        <span class="value">{{ seller }}</span>
+        <span class="label" style="margin-top:6px">ИНН</span>
+        <span class="value">{{ inn }}</span>
+      </td>
+      <td>
+        <span class="label">Покупатель</span>
+        <span class="value">{{ customer }}</span>
+        <span class="label" style="margin-top:6px">Адрес</span>
+        <span class="value">{{ customer_address }}</span>
+      </td>
+    </tr>
+  </table>
+
+  <table class="meta">
+    <tr><td>Номер чека</td><td>{{ invoice_id }}</td></tr>
+    <tr><td>Дата чека</td><td>{{ date_fmt }}</td></tr>
+    <tr><td>Способ оплаты</td><td>{{ payment_method }}</td></tr>
+    <tr><td>Налог</td><td>{{ tax_rate }}</td></tr>
+    <tr><td>Менеджер</td><td>{{ manager }}</td></tr>
+  </table>
+
+  <table class="items">
+    <thead>
+      <tr>
+        <th style="width:30px">&#8470;</th>
+        <th>Наименование товара / услуги</th>
+        <th class="r">Кол-во</th>
+        <th class="r">Цена</th>
+        <th class="r">Сумма</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ items_rows }}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td class="total-label" colspan="4">Итого к оплате ({{ items_count }} поз.)</td>
+        <td class="total-value">{{ total_fmt }}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="note">{{ note }}</div>
+
+  <div class="sign">
+    <span>Кассир-оператор<div class="line"></div></span>
+    <span style="text-align:right">Подпись покупателя<div class="line" style="margin-left:auto"></div></span>
+  </div>
+
+  <footer>
+    Документ сформирован автоматически {{ generated_at }} на основе данных файла {{ source_file}} &middot; шаблон «{{ template_name }}»
+  </footer>
+
+</body>
+</html>

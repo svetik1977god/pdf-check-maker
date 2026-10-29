@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Чек (современный) {{ invoice_id }}</title>
+  <style>
+    @page { size: A4; margin: 12mm 12mm 16mm 12mm; }
+
+    body {
+      font-family: "DejaVu Sans", "Roboto", "Segoe UI", Arial, sans-serif;
+      font-size: 11px;
+      color: #22272e;
+      margin: 0;
+    }
+
+    .sheet { border: 1px solid #dfe3e8; border-radius: 6px; overflow: hidden; }
+
+    .hero {
+      background: #1f4d7a;
+      color: #ffffff;
+      padding: 18px 20px;
+    }
+
+    .hero td { vertical-align: middle; }
+
+    .hero .doc-type {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      opacity: 0.85;
+    }
+
+    .hero .doc-number { font-size: 24px; font-weight: bold; margin-top: 4px; }
+
+    .hero .doc-date {
+      text-align: right;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .band {
+      background: #f4f7fa;
+      padding: 12px 20px;
+      border-bottom: 1px solid #dfe3e8;
+    }
+
+    .band table { width: 100%; }
+
+    .band td { vertical-align: top; width: 25%; padding-right: 10px; }
+
+    .cap {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #7c8794;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .strong { font-size: 12px; font-weight: bold; }
+
+    .content { padding: 16px 20px 20px 20px; }
+
+    table.lines { width: 100%; border-collapse: collapse; }
+
+    .lines thead th {
+      background: #1f4d7a;
+      color: #fff;
+      text-align: left;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 7px 9px;
+    }
+
+    .lines thead th.right { text-align: right; }
+
+    .lines tbody td {
+      padding: 7px 9px;
+      border-bottom: 1px solid #e6eaef;
+      vertical-align: top;
+    }
+
+    .lines tbody tr:nth-child(even) td { background: #fafcfe; }
+
+    .lines td.c { width: 28px; text-align: center; color: #7c8794; }
+    .lines td.r { width: 88px; text-align: right; white-space: nowrap; }
+
+    .summary { margin-top: 14px; text-align: right; }
+
+    .summary-box {
+      display: inline-block;
+      min-width: 230px;
+      border: 1px solid #1f4d7a;
+      border-radius: 5px;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    .summary-box table { width: 100%; }
+
+    .summary-box td { padding: 2px 0; font-size: 11px; }
+
+    .summary-box td.amount { text-align: right; white-space: nowrap; }
+
+    .summary-box .grand td {
+      font-size: 15px;
+      font-weight: bold;
+      padding-top: 8px;
+      border-top: 1px solid #c9d6e3;
+      color: #1f4d7a;
+    }
+
+    .payinfo {
+      margin-top: 16px;
+      padding: 10px 12px;
+      background: #f4f7fa;
+      border-radius: 4px;
+      font-size: 10px;
+      color: #4a5461;
+      line-height: 1.6;
+    }
+
+    .payinfo:empty { display: none; }
+
+    .stamp {
+      margin-top: 20px;
+      font-size: 10px;
+      color: #6b7583;
+    }
+
+    footer {
+      margin-top: 16px;
+      padding-top: 8px;
+      border-top: 1px dashed #c9d6e3;
+      font-size: 9px;
+      color: #8b95a1;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sheet">
+    <div class="hero">
+      <table>
+        <tr>
+          <td>
+            <div class="doc-type">Кассовый чек</div>
+            <div class="doc-number">&#8470; {{ invoice_id }}</div>
+          </td>
+          <td class="doc-date">
+            от {{ date_fmt }}<br>
+            {{ seller }}<br>
+            ИНН {{ inn }}
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="band">
+      <table>
+        <tr>
+          <td>
+            <span class="cap">Покупатель</span>
+            <span class="strong">{{ customer }}</span>
+          </td>
+          <td>
+            <span class="cap">Адрес</span>
+            {{ customer_address }}
+          </td>
+          <td>
+            <span class="cap">Менеджер</span>
+            {{ manager }}
+          </td>
+          <td>
+            <span class="cap">Налог</span>
+            {{ tax_rate }}
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="content">
+      <table class="lines">
+        <thead>
+          <tr>
+            <th style="width:28px">&#8470;</th>
+            <th>Позиция</th>
+            <th class="right">Кол-во</th>
+            <th class="right">Цена</th>
+            <th class="right">Сумма</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{ items_rows }}
+        </tbody>
+      </table>
+
+      <div class="summary">
+        <div class="summary-box">
+          <table>
+            <tr>
+              <td>Позиций в чеке</td>
+              <td class="amount">{{ items_count }}</td>
+            </tr>
+            <tr class="grand">
+              <td>Итого</td>
+              <td class="amount">{{ total_fmt }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="payinfo">
+        Способ оплаты: {{ payment_method }}<br>
+        {{ note }}
+      </div>
+
+      <div class="stamp">
+        Чек подтверждён электронной подписью. Продавец: {{ seller }}
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Сформировано {{ generated_at }} &middot; данные: {{ source_file}} &middot; шаблон: {{ template_name }}
+  </footer>
+
+</body>
+</html>

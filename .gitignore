@@ -1,0 +1,20 @@
+# Сгенерированные PDF (папку создаёт main.py)
+output/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Отчёты / временные файлы
+*.log
+tmp/
+
+# Редакторы и ОС
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
